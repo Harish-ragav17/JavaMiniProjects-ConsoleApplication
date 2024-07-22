@@ -41,6 +41,11 @@ public class Main {
                         }
                         break;
 
+                    case 2:
+                        System.out.println("Enter Your Id: ");
+                        int id=sc.nextInt();
+                        TicketCancellation.cancelTicket(id);
+                        break;
                     case 3:
                         System.out.println("----------------------------------------");
                         TicketBooking.displayConfirmedList();
@@ -53,6 +58,9 @@ public class Main {
                         System.out.println("----------------------------------------");
                         TicketBooking.displayWaitingList();
                         break;
+                    case 6:
+                        System.out.println("Thank You..!");
+                        return;
                 }
             }
     }

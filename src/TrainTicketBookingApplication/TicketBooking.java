@@ -2,12 +2,14 @@ package TrainTicketBookingApplication;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Map.*;
+import java.util.Map;
 import java.util.Queue;
 
 public class TicketBooking {
     private static int berthLimit=1; //lower-2,middle-2,upper-2
     private static int racLimit=2;
-    private static int waitingListLimit=2;
+    private static int waitingListLimit=1;
 
     private static int upperSearNumber=1;
     private static int middleSeatNumber=2;
@@ -21,6 +23,7 @@ public class TicketBooking {
 
     private static Queue<Passanger> racQueue=new LinkedList<>();
     private static Queue<Passanger> waitingListQueue=new LinkedList<>();
+
 
         public static void bookTicket(Passanger p) {
             if (isBerthFull()) {
@@ -57,27 +60,42 @@ public class TicketBooking {
 
 
          private static boolean checkTicketAvailablity( Passanger p){
+
+             Map<Integer,Character> cancelledTickets=TicketCancellation.getCancelledTickets();
+
                 if(p.getSeatPreference() == 'U'){
                     if(upperList.size() < berthLimit){
-                         p.setSeatNo(upperSearNumber);
+                            if(!cancelledTickets.isEmpty()){
+                                allocateCancelledTickets(cancelledTickets,p);
+                            }else {
+                                p.setSeatNo(upperSearNumber);
+                                upperSearNumber += 3;
+                            }
                          upperList.add(p);
-                         upperSearNumber+=3;
                          return true;
                     }
                 }
                 else if(p.getSeatPreference() == 'M'){
                      if(middleList.size() < berthLimit){
-                         p.setSeatNo(middleSeatNumber);
+                         if(!cancelledTickets.isEmpty()){
+                             allocateCancelledTickets(cancelledTickets,p);
+                         }else {
+                             p.setSeatNo(middleSeatNumber);
+                             middleSeatNumber += 3;
+                         }
                          middleList.add(p);
-                        middleSeatNumber+=3;
                         return true;
                      }
                 }
                 else {
                      if(lowerList.size() < berthLimit) {
-                         p.setSeatNo(lowerSeatNumber);
+                         if(!cancelledTickets.isEmpty()){
+                             allocateCancelledTickets(cancelledTickets,p);
+                         }else {
+                             p.setSeatNo(lowerSeatNumber);
+                             lowerSeatNumber += 3;
+                         }
                          lowerList.add(p);
-                         lowerSeatNumber += 3;
                          return true;
                      }
                 }
@@ -135,6 +153,70 @@ public class TicketBooking {
             }
         }
 
+        public static void allocateCancelledTickets(Map<Integer,Character> map,Passanger p){
+            char preference=p.getSeatPreference();
 
+            for(Entry<Integer,Character> set : map.entrySet()){
+                    if(preference == (char) set.getValue()){
+                        p.setSeatNo((int) set.getKey());
+                        map.remove(set.getKey());
+                        break;
+                    }
+             }
+        }
+
+
+
+
+
+
+
+        public static ArrayList<Passanger> getConfirmedList() {
+            return confirmedList;
+        }
+
+        public static Queue<Passanger> getRacQueue() {
+            return racQueue;
+        }
+
+        public static Queue<Passanger> getWaitingListQueue() {
+            return waitingListQueue;
+        }
+
+        public static void setConfirmedList(ArrayList<Passanger> confirmedList) {
+            TicketBooking.confirmedList = confirmedList;
+        }
+
+        public static void setRacQueue(Queue<Passanger> racQueue) {
+            TicketBooking.racQueue = racQueue;
+        }
+
+        public static void setWaitingListQueue(Queue<Passanger> waitingListQueue) {
+            TicketBooking.waitingListQueue = waitingListQueue;
+        }
+
+        public static ArrayList<Passanger> getUpperList() {
+            return upperList;
+        }
+
+        public static void setUpperList(ArrayList<Passanger> upperList) {
+            TicketBooking.upperList = upperList;
+        }
+
+        public static ArrayList<Passanger> getLowerList() {
+            return lowerList;
+        }
+
+        public static void setLowerList(ArrayList<Passanger> lowerList) {
+            TicketBooking.lowerList = lowerList;
+        }
+
+        public static ArrayList<Passanger> getMiddleList() {
+            return middleList;
+        }
+
+        public static void setMiddleList(ArrayList<Passanger> middleList) {
+            TicketBooking.middleList = middleList;
+        }
 }
 
